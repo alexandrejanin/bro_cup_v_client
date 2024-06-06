@@ -2,7 +2,7 @@
   <div class="item">
     <div :class="{'item-parent': tournamentTree.topChild||tournamentTree.bottomChild}">
       <MatchTable
-          v-if="tournamentTree.topPlayer||tournamentTree.bottomPlayer"
+          v-if="typeof tournamentTree!=='string'"
           :label="tournamentTree.label"
           :top-player="tournamentTree.topPlayer"
           :bottom-player="tournamentTree.bottomPlayer"/>

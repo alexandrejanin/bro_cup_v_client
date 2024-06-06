@@ -1,12 +1,32 @@
 <template>
-  <table>
+  <!--  <p style="display: inline-block"> Jeu 1/5</p>-->
+  <table style="display: inline-block">
+    <tr v-for="{src,filter,selected} in [
+                {src:'../src/assets/geoguessr-square.png',filter:'opacity(0.5)'},
+                {src:'../src/assets/trackmania.png', selected:true},
+                {src:'../src/assets/gdash.svg'},
+                {src:'../src/assets/golf.png'},
+                {src:'../src/assets/quake.webp'},
+            ]">
+      <img
+          :class="{selected}"
+          :style="'vertical-align: middle;padding: 5px;height: 50px;filter:' + filter"
+          :src="src"
+          :alt="src">
+    </tr>
+  </table>
+  <table style="display: inline-block">
     <tr>
       <th> Joueur</th>
       <th class="score-header"> Score</th>
     </tr>
-    <tr v-for="player in players">
+    <tr
+        v-for="player in players">
       <td> {{ player.name }}</td>
-      <td> {{ player.score }}</td>
+      <td
+          :class="{won: player.rank <= 4, lost: player.rank >= 5}">
+        {{ player.score }}
+      </td>
     </tr>
   </table>
 </template>
@@ -19,36 +39,44 @@ export default {
       type: Array,
       default: [
         {
-          name: 'Joueur ???',
+          name: 'Joueur 1',
           score: 0,
+          rank: 1,
         },
         {
-          name: 'Joueur ???',
+          name: 'Joueur 2',
           score: 0,
+          rank: 2,
         },
         {
-          name: 'Joueur ???',
+          name: 'Joueur 3',
           score: 0,
+          rank: 3,
         },
         {
-          name: 'Joueur ???',
+          name: 'Joueur 4',
           score: 0,
+          rank: 4,
         },
         {
-          name: 'Joueur ???',
+          name: 'Joueur 5',
           score: 0,
+          rank: 5,
         },
         {
-          name: 'Joueur ???',
+          name: 'Joueur 6',
           score: 0,
+          rank: 6,
         },
         {
-          name: 'Joueur ???',
+          name: 'Joueur 7',
           score: 0,
+          rank: 7,
         },
         {
-          name: 'Joueur ???',
+          name: 'Joueur 8',
           score: 0,
+          rank: 8,
         },
       ],
     }
@@ -79,7 +107,11 @@ td {
 
 }
 
-.score-header{
+.selected {
+  background-color: orange;
+}
+
+.score-header {
   padding-right: 10px;
 }
 

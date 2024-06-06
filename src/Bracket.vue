@@ -8,10 +8,9 @@ import PoolTable from "./PoolTable.vue";
     Poules
   </h2>
   <div>
-    <PoolTable style="display: inline-block"></PoolTable>
-    <PoolTable style="display: inline-block"></PoolTable>
+    <PoolTable></PoolTable>
+    <PoolTable></PoolTable>
   </div>
-
   <h2>
     Tournoi
   </h2>
@@ -26,8 +25,8 @@ export default {
     tournamentTree: {
       default: {
         label: "Grande Finale",
-        topPlayer: "Joueur ???",
-        bottomPlayer: "Joueur ???",
+        // topPlayer: "Joueur ???",
+        // bottomPlayer: "Joueur ???",
         topChild: {
           label: "Finale Winners",
           topPlayer: "Joueur ???",

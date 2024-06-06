@@ -13,6 +13,9 @@
             lost: bottomScore === maxScore,
             ongoing: topScore < maxScore && bottomScore < maxScore}">
         {{ topScore }}
+        <select>
+          <option v-for="i in maxScore+1">{{ i - 1 }}</option>
+        </select>
       </td>
     </tr>
     <tr>
@@ -23,6 +26,9 @@
             lost: topScore === maxScore,
             ongoing: topScore < maxScore && bottomScore < maxScore}">
         {{ bottomScore }}
+        <select>
+          <option v-for="i in maxScore+1">{{ i - 1 }}</option>
+        </select>
       </td>
     </tr>
   </table>
