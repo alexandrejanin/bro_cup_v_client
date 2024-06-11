@@ -1,19 +1,8 @@
 <script setup>
 import BracketItem from "./BracketItem.vue";
-import PoolTable from "./PoolTable.vue";
 </script>
 
 <template>
-  <h2>
-    Poules
-  </h2>
-  <div>
-    <PoolTable></PoolTable>
-    <PoolTable></PoolTable>
-  </div>
-  <h2>
-    Tournoi
-  </h2>
   <div class="wrapper">
     <BracketItem :tournament-tree="tournamentTree"/>
   </div>
@@ -27,6 +16,7 @@ export default {
         label: "Grande Finale",
         // topPlayer: "Joueur ???",
         // bottomPlayer: "Joueur ???",
+        maxScore: 3,
         topChild: {
           label: "Finale Winners",
           topPlayer: "Joueur ???",
@@ -39,6 +29,8 @@ export default {
               // label: "Quart 1",
               topPlayer: "Joueur A1",
               bottomPlayer: "Joueur B4",
+              topScore: 2,
+              bottomScore: 1,
             },
             bottomChild: {
               // label: "Quart 2",

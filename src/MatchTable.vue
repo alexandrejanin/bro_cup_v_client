@@ -1,43 +1,91 @@
+<script setup>
+import {storeToRefs} from "pinia";
+import {useCupStore} from "./cupStore.js";
+
+const cupStore = useCupStore();
+const {token, adminMode} = storeToRefs(cupStore);
+</script>
+
 <template>
-  <table>
+  <table class="match-table">
     <tr v-if="label.length>0">
-      <th class="label">
+      <th colspan="100%" class="label">
         {{ label }}
       </th>
     </tr>
-    <tr>
-      <td>{{ topPlayer }}</td>
+    <tr v-for="player in players">
+      <td class="bracket-player">{{ player.name }}</td>
       <td
+          style="padding: 0 12px"
           :class="{
-            won: topScore === maxScore,
-            lost: bottomScore === maxScore,
-            ongoing: topScore < maxScore && bottomScore < maxScore}">
-        {{ topScore }}
-        <select>
-          <option v-for="i in maxScore+1">{{ i - 1 }}</option>
+            won: player.score === maxScore,
+            ongoing: players[0].score<maxScore&&players[1].score<maxScore,
+            lost: player.score < maxScore && (players[0].score===maxScore||players[1].score===maxScore),}">
+        {{ player.score }}
+        <select
+            v-if="token && adminMode"
+            v-model="player.score">
+          <option v-for="i in maxScore+1" v-bind:value="i-1">
+            {{ i - 1 }}
+          </option>
         </select>
       </td>
-    </tr>
-    <tr>
-      <td>{{ bottomPlayer }}</td>
-      <td
-          :class="{
-            won: bottomScore === maxScore,
-            lost: topScore === maxScore,
-            ongoing: topScore < maxScore && bottomScore < maxScore}">
-        {{ bottomScore }}
-        <select>
-          <option v-for="i in maxScore+1">{{ i - 1 }}</option>
-        </select>
-      </td>
+      <td><img src="../src/assets/quake.webp" width="20"></td>
     </tr>
   </table>
 </template>
 
+<style scoped lang="scss">
+
+.match-table {
+  background-color: #1a1a1a;
+  border-radius: 5px;
+}
+
+.won {
+  background-color: lightgreen;
+}
+
+.lost {
+  background-color: indianred;
+}
+
+.ongoing {
+  background-color: #fafab6;
+}
+
+.label {
+  color: white;
+}
+
+.bracket-player {
+  color: white;
+  padding: 5px 10px;
+}
+</style>
+
 <script>
 export default {
   name: 'MatchTable',
+  data() {
+    return {
+      players: [
+        {
+          name: this.topPlayer,
+          score: this.topScore,
+        },
+        {
+          name: this.bottomPlayer,
+          score: this.bottomScore,
+        },
+      ]
+    }
+  },
   props: {
+    maxScore: {
+      type: Number,
+      default: 2,
+    },
     label: {
       type: String,
       default: "",
@@ -58,47 +106,6 @@ export default {
       type: Number,
       default: 1
     },
-    maxScore: {
-      type: Number,
-      default: 3,
-    }
   },
-
 }
 </script>
-
-<style lang="scss">
-table {
-  background-color: #1a1a1a;
-  border-radius: 7px;
-}
-
-td {
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 5px 10px;
-  margin: 0;
-
-  &:nth-child(1) {
-    background-color: beige;
-  }
-
-}
-
-.won {
-  background-color: lightgreen;
-}
-
-.lost {
-  background-color: indianred;
-}
-
-.ongoing {
-  background-color: #fafab6;
-}
-
-.label {
-  color: white;
-  padding-left: 8px;
-}
-</style>
