@@ -1,41 +1,113 @@
+<script setup>
+import MatchTable from "./MatchTable.vue";
+
+defineProps({
+  match: Object,
+});
+
+</script>
+
 <template>
   <div class="item">
-    <div :class="{'item-parent': tournamentTree.topChild||tournamentTree.bottomChild}">
+    <div :class="{'item-parent': match.topChild||match.bottomChild}">
       <MatchTable
-          v-if="typeof tournamentTree!=='string'"
-          :label="tournamentTree.label"
-          :top-player="tournamentTree.topPlayer"
-          :bottom-player="tournamentTree.bottomPlayer"
-          :top-score="tournamentTree.topScore"
-          :bottom-score="tournamentTree.bottomScore"
-          :max-score="tournamentTree.maxScore"/>
-      <p v-else>{{ tournamentTree.toString() }}</p>
+          v-if="typeof match!=='string'"
+          :match=match
+      />
+      <p v-else>{{ match.toString() }}</p>
     </div>
     <div class="item-childrens">
       <div
           class="item-child"
-          v-if="tournamentTree.topChild">
+          v-if="match.topChild">
         <bracket-item
-            :tournament-tree="tournamentTree.topChild"/>
+            :match="match.topChild"/>
       </div>
       <div
           class="item-child"
-          v-if="tournamentTree.bottomChild">
+          v-if="match.bottomChild">
         <bracket-item
-            :tournament-tree="tournamentTree.bottomChild"/>
+            :match="match.bottomChild"/>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import MatchTable from "./MatchTable.vue"
+<style lang="scss">
+$side-margin: 50px;
+$vertical-margin: 5px;
 
-export default {
-  name: 'BracketItem',
-  components: {MatchTable},
-  props: {
-    tournamentTree: {}
+.wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.item {
+  display: flex;
+  flex-direction: row-reverse;
+
+  &-parent {
+    position: relative;
+    margin-left: $side-margin;
+    display: flex;
+    align-items: center;
+
+    &:after {
+      position: absolute;
+      content: '';
+      width: $side-margin/2;
+      height: 2px;
+      left: 0;
+      top: 50%;
+      background-color: #fff;
+      transform: translateX(-100%);
+    }
+  }
+
+  &-childrens {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &-child {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-top: $vertical-margin;
+    margin-bottom: $vertical-margin;
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      background-color: #fff;
+      right: 0;
+      top: 50%;
+      transform: translateX(100%);
+      width: 25px;
+      height: 2px;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      background-color: #fff;
+      right: -$side-margin / 2;
+      height: calc(50% + 22px);
+      width: 2px;
+      top: 50%;
+    }
+
+    &:last-child {
+      &:after {
+        transform: translateY(-100%);
+      }
+    }
+
+    &:only-child:after {
+      display: none;
+    }
   }
 }
-</script>
+</style>

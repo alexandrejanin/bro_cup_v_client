@@ -36,8 +36,8 @@ onMounted(() => {
             ]">
               <img
                   :class="{
-                    'game-selected': index === cupStore.group_stage.group[groupIndex].game_index,
-                    'game-over': index < cupStore.group_stage.group[groupIndex].game_index,
+                    'game-selected': index === group_stage.group[groupIndex].game_index,
+                    'game-over': index < group_stage.group[groupIndex].game_index,
                   }"
                   style="vertical-align: middle;height: 50px;padding: 5px;border-radius: 5px"
                   :src="image"
@@ -48,7 +48,7 @@ onMounted(() => {
       </td>
     </tr>
     <tr
-        v-if="cupStore.group_ranking"
+        v-if="group_ranking"
         v-for="(player,index) in group_ranking.group[groupIndex].players"
         class="player-row">
       <td class="player">

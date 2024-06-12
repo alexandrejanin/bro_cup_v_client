@@ -7,7 +7,7 @@ export const useCupStore = defineStore('cup', {
         adminMode: false,
         group_stage: defaultGroupStage,
         group_ranking: null,
-        tournament_match: null,
+        tournamentTree: null,
     }),
     actions: {
         async login(username, password) {
@@ -24,13 +24,14 @@ export const useCupStore = defineStore('cup', {
         async update() {
             await this.updateGroupStage();
             await this.updateGroupRanking();
+            await this.updateTournament();
         },
         async updateGroupStage() {
             console.log('updateGroupStage');
             const response = await axios.get('http://localhost:3000/poules/');
             if (response.status === 200) {
                 this.group_stage = response.data;
-                console.log(this.group_stage);
+                console.log('Group stage :', this.group_stage);
             } else {
                 console.error(response);
             }
@@ -40,7 +41,17 @@ export const useCupStore = defineStore('cup', {
             const response = await axios.get('http://localhost:3000/poules_rank/');
             if (response.status === 200) {
                 this.group_ranking = response.data;
-                console.log(this.group_ranking)
+                console.log('Group ranking :', this.group_ranking)
+            } else {
+                console.error(response);
+            }
+        },
+        async updateTournament() {
+            console.log('updateTournament');
+            const response = await axios.get('http://localhost:3000/tournament_tree/');
+            if (response.status === 200) {
+                this.tournamentTree = response.data.tournamentTree;
+                console.log('Tournament tree :', this.tournamentTree)
             } else {
                 console.error(response);
             }
@@ -60,8 +71,7 @@ export const useCupStore = defineStore('cup', {
             return -1;
         },
         async drawPlayer() {
-            await this.updateGroupStage();
-            await this.updateGroupRanking();
+            await this.update();
             const index = this.getNextPlayer();
 
             if (index < 0)
@@ -96,6 +106,18 @@ export const useCupStore = defineStore('cup', {
                 {
                     result
                 },
+                {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.token,
+                    }
+                },
+            ).then(this.update);
+        },
+        async setTournamentScore(matchId, playerIndex, score) {
+            console.log(`setTournamentScore(${matchId}, ${playerIndex}, ${score})`)
+            const response = await axios.post(
+                `http://localhost:3000/tournament/${matchId}/${playerIndex}/${score}`,
+                {},
                 {
                     headers: {
                         'Authorization': 'Bearer ' + this.token,

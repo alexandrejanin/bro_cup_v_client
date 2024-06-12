@@ -1,10 +1,10 @@
 <script setup>
-import Bracket from "./Bracket.vue";
 import PoolTable from "./PoolTable.vue";
 import PoolResultsTable from "./PoolResultsTable.vue";
 import {onMounted, ref} from "vue";
 import {useCupStore} from "./cupStore.js";
 import {storeToRefs} from "pinia";
+import BracketItem from "./BracketItem.vue";
 
 const cupStore = useCupStore();
 const {token, adminMode} = storeToRefs(cupStore);
@@ -22,8 +22,7 @@ function drawPlayer() {
 }
 
 onMounted(() => {
-  cupStore.updateGroupStage();
-  cupStore.updateGroupRanking();
+  cupStore.update();
 });
 
 </script>
@@ -55,36 +54,42 @@ onMounted(() => {
     Poules
   </h2>
 
-  <button
-      v-if="token && adminMode"
-      :onclick="drawPlayer">
+  <button v-if="token && adminMode && cupStore.getNextPlayer()!==-1"
+          :onclick="drawPlayer">
     Tirer un joueur
   </button>
 
   <div>
     <PoolTable
         title="Poule A"
-        :group-index="0"/>
+        :group-index=0
+    />
     <PoolTable
         title="Poule B"
-        :group-index="1"/>
+        :group-index=1
+    />
   </div>
 
-  <div
-      v-if="adminMode">
+  <div v-if="token && adminMode">
     <h3>ADMIN : Résultats poules</h3>
     <PoolResultsTable
         group-name="Poule A"
-        group-index="0"/>
+        :group-index=0
+    />
     <PoolResultsTable
         group-name="Poule B"
-        group-index="1"/>
+        :group-index=1
+    />
   </div>
 
-  <h2>
-    Tournoi
-  </h2>
-  <Bracket></Bracket>
+  <div v-if="cupStore.tournamentTree">
+    <h2>
+      Tournoi
+    </h2>
+    <bracket-item
+        :match="cupStore.tournamentTree.default"
+    />
+  </div>
 </template>
 
 <style>

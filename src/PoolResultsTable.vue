@@ -1,17 +1,7 @@
 <script setup>
 import {useCupStore} from "./cupStore.js";
-import {storeToRefs} from "pinia";
 
 const cupStore = useCupStore();
-const {group_stage} = storeToRefs(cupStore);
-
-const ranks = {
-  0: [],
-  1: [],
-  2: [],
-  3: [],
-  4: [],
-}
 
 defineProps({
   groupName: String,
@@ -23,11 +13,12 @@ function setGame(groupIndex, gameIndex) {
 }
 
 function sendResults(groupIndex, gameIndex) {
-  console.log(ranks);
   const result = [];
-  for (let i = 0; i < ranks[gameIndex].length; i++) {
-    result[i] = parseInt(ranks[gameIndex][i]);
+  console.log(cupStore.group_stage);
+  for (let playerIndex = 0; playerIndex < 8; playerIndex++) {
+    result[playerIndex] = cupStore.group_stage.group[groupIndex].players[playerIndex].ranking[gameIndex];
   }
+  console.log(result);
   cupStore.sendGroupResults(groupIndex, gameIndex, result);
 }
 </script>
@@ -92,18 +83,23 @@ function sendResults(groupIndex, gameIndex) {
             :alt="src">
       </th>
     </tr>
-    <tr v-for="playerIndex in group_stage.group[this.groupIndex].players.length">
-      <td class="playername">{{ group_stage.group[this.groupIndex].players[playerIndex - 1].name }}</td>
+    <tr v-for="playerIndex in cupStore.group_stage.group[groupIndex].players.length">
+      <td class="playername">{{ cupStore.group_stage.group[groupIndex].players[playerIndex - 1].name }}</td>
       <td v-for="gameIndex in 5">
-        <select v-model="ranks[gameIndex-1][playerIndex-1]">
-          <option v-for="ranking in 8">{{ ranking }}</option>
+        <select
+            v-model="cupStore.group_stage.group[groupIndex].players[playerIndex-1].ranking[gameIndex-1]">
+          <option
+              v-for="ranking in 9"
+              v-bind="parseInt(ranking)-1">
+            {{ ranking - 1 }}
+          </option>
         </select>
       </td>
     </tr>
     <tr>
       <td></td>
       <td v-for="gameIndex in 5">
-        <button @click="sendResults(this.groupIndex, gameIndex-1)">Valider</button>
+        <button @click="sendResults(groupIndex, gameIndex-1)">Valider</button>
       </td>
     </tr>
   </table>
