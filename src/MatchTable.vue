@@ -78,17 +78,16 @@ function isWinning(match, playerIndex) {
           {{ player.score }}
         </div>
       </td>
-      <td
-          v-if="player.ban>=0"
+      <td v-if="player.ban>=0"
           class="ban">
-        <img :src="banIcons[player.ban]" width="20" class="banicon">
+        <img :src="banIcons[player.ban]"
+             class="banicon">
       </td>
       <td v-if="adminMode">
         <select v-model="player.ban">
-          <option
-              v-for="i in 6"
-              v-bind="i-2"
-              @click="cupStore.setBan(match.id_match, playerIndex, player.ban)">
+          <option v-for="i in 6"
+                  v-bind="i-2"
+                  @click="cupStore.setBan(match.id_match, playerIndex, player.ban)">
             {{ i - 2 }}
           </option>
         </select>
@@ -98,7 +97,6 @@ function isWinning(match, playerIndex) {
 </template>
 
 <style scoped lang="scss">
-
 th {
   color: white;
 }
@@ -110,10 +108,14 @@ th {
 
 .ban {
   background-color: indianred;
+  padding: 3px;
+  width: 20px;
 }
 
 .banicon {
-  padding: 0;
+  width: 100%;
+  display: flex;
+  border-radius: 5px;
 }
 
 .won {

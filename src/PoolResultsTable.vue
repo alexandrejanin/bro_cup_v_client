@@ -8,6 +8,16 @@ defineProps({
   groupIndex: Number,
 });
 
+async function randomRanks(groupIndex) {
+  for (let gameIndex = 0; gameIndex < 5; gameIndex++) {
+    const results = [];
+    for (let playerIndex = 0; playerIndex < 8; playerIndex++)
+      results[playerIndex] = Math.ceil(8 * Math.random());
+
+    await cupStore.sendGroupResults(groupIndex, gameIndex, results);
+  }
+}
+
 function setGame(groupIndex, gameIndex) {
   cupStore.setGroupGame(groupIndex, gameIndex);
 }
@@ -114,9 +124,15 @@ function sendBonus(groupIndex) {
       </td>
     </tr>
     <tr>
-      <td></td>
+      <td>
+        <button @click="randomRanks(groupIndex)">
+          Random
+        </button>
+      </td>
       <td v-for="gameIndex in 5">
-        <button @click="sendResults(groupIndex, gameIndex-1)">Valider</button>
+        <button @click="sendResults(groupIndex, gameIndex-1)">
+          Valider
+        </button>
       </td>
     </tr>
   </table>

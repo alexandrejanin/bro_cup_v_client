@@ -62,7 +62,7 @@ onMounted(() => {
   </table>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .pooltable {
   display: inline-block;
   border-radius: 7px;
