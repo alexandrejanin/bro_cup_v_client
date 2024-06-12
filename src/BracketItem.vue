@@ -2,7 +2,7 @@
 import MatchTable from "./MatchTable.vue";
 
 defineProps({
-  match: Object,
+  match: [String, Object],
 });
 
 </script>

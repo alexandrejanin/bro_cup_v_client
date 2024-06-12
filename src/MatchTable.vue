@@ -5,7 +5,22 @@ import {useCupStore} from "./cupStore.js";
 const cupStore = useCupStore();
 const {token, adminMode} = storeToRefs(cupStore);
 
-const maxScore = 2;
+const banIcons = [
+  '../src/assets/quake.webp',
+  '../src/assets/gdash.svg',
+  '../src/assets/trackmania.png',
+  '../src/assets/golf.png',
+  '../src/assets/geoguessr-square.png',
+];
+
+const gameNames = [
+  'Aucun',
+  'Quake',
+  'GDash',
+  'TM',
+  'Golf',
+  'Geo'
+];
 
 defineProps({
   match: {
@@ -13,38 +28,49 @@ defineProps({
       id_match: Number,
       label: String,
       date: String,
-      topPlayer: Object,
-      bottomPlayer: Object,
+      players: Array,
+      nb_games: Number,
     },
     required: true,
   },
 });
+
+function isWinning(match, playerIndex) {
+  return match.players[playerIndex].score >= Math.ceil(match.nb_games / 2);
+}
 </script>
 
 <template>
   <table class="match-table">
-    <tr v-if="match.label">
-      <th colspan="100%" class="label">
+    <tr>
+      <th v-if="adminMode||match.label && !match.label.includes('/')"
+          colspan="2"
+          class="label">
         {{ match.label }}
       </th>
+      <th v-else
+          colspan="2"/>
+      <th v-if="cupStore.adminMode||match.players[0].ban >= 0 || match.players[1].ban >= 0">
+        Bans
+      </th>
     </tr>
-    <tr v-for="player in [match.topPlayer, match.bottomPlayer]">
+    <tr v-for="(player,playerIndex) in match.players">
       <td class="bracket-player">
         {{ player.name }}
       </td>
       <td
-          style="padding: 0 12px">
-        <!--          :class="{-->
-        <!--            won: player.score === maxScore,-->
-        <!--            ongoing: players[0].score<maxScore&&players[1].score<maxScore,-->
-        <!--            lost: player.score < maxScore && (players[0].score===maxScore||players[1].score===maxScore),}"-->
+          style="padding: 0 12px;width: 0"
+          :class="{
+                    won: isWinning(match,playerIndex),
+                    lost: isWinning(match,(playerIndex+1)%2),
+                    ongoing: !isWinning(match,playerIndex) && !isWinning(match,(playerIndex+1)%2)}">
         <select
             v-if="token && adminMode"
             v-model="player.score">
           <option
-              v-for="i in maxScore+1"
+              v-for="i in Math.ceil(match.nb_games/2)+1"
               :value=i-1
-              @click="console.log(match);cupStore.setTournamentScore(match.id_match, player===match.topPlayer?0:1, player.score)">
+              @click="console.log(match);cupStore.setTournamentScore(match.id_match, playerIndex, player.score)">
             {{ i - 1 }}
           </option>
         </select>
@@ -52,8 +78,20 @@ defineProps({
           {{ player.score }}
         </div>
       </td>
-      <td>
-        <img src="../src/assets/quake.webp" width="20">
+      <td
+          v-if="player.ban>=0"
+          class="ban">
+        <img :src="banIcons[player.ban]" width="20" class="banicon">
+      </td>
+      <td v-if="adminMode">
+        <select v-model="player.ban">
+          <option
+              v-for="i in 6"
+              v-bind="i-2"
+              @click="cupStore.setBan(match.id_match, playerIndex, player.ban)">
+            {{ i - 2 }}
+          </option>
+        </select>
       </td>
     </tr>
   </table>
@@ -61,7 +99,7 @@ defineProps({
 
 <style scoped lang="scss">
 
-td {
+th {
   color: white;
 }
 
@@ -70,24 +108,36 @@ td {
   border-radius: 5px;
 }
 
+.ban {
+  background-color: indianred;
+}
+
+.banicon {
+  padding: 0;
+}
+
 .won {
+  font-weight: bold;
   background-color: lightgreen;
 }
 
 .lost {
+  font-weight: bold;
   background-color: indianred;
 }
 
 .ongoing {
+  font-weight: bold;
   background-color: #fafab6;
 }
 
 .label {
   color: white;
+  padding: 0 8px;
 }
 
 .bracket-player {
   color: white;
-  padding: 5px 10px;
+  padding: 5px 12px;
 }
 </style>

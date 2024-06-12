@@ -14,12 +14,18 @@ function setGame(groupIndex, gameIndex) {
 
 function sendResults(groupIndex, gameIndex) {
   const result = [];
-  console.log(cupStore.group_stage);
   for (let playerIndex = 0; playerIndex < 8; playerIndex++) {
-    result[playerIndex] = cupStore.group_stage.group[groupIndex].players[playerIndex].ranking[gameIndex];
+    result[playerIndex] = parseInt(cupStore.group_stage.group[groupIndex].players[playerIndex].ranking[gameIndex]);
   }
-  console.log(result);
   cupStore.sendGroupResults(groupIndex, gameIndex, result);
+}
+
+function sendBonus(groupIndex) {
+  const result = [];
+  for (let playerIndex = 0; playerIndex < 8; playerIndex++) {
+    result[playerIndex] = parseInt(cupStore.group_stage.group[groupIndex].players[playerIndex].bonus);
+  }
+  cupStore.sendGroupBonus(groupIndex, result);
 }
 </script>
 
@@ -69,7 +75,7 @@ function sendResults(groupIndex, gameIndex) {
       </th>
     </tr>
     <tr>
-      <th style="color: white">Joueur</th>
+      <th>Joueur</th>
       <th v-for="{src} in [
                 {src:'../src/assets/quake.webp'},
                 {src:'../src/assets/gdash.svg'},
@@ -82,16 +88,27 @@ function sendResults(groupIndex, gameIndex) {
             :src="src"
             :alt="src">
       </th>
+      <th>Bonus</th>
     </tr>
-    <tr v-for="playerIndex in cupStore.group_stage.group[groupIndex].players.length">
-      <td class="playername">{{ cupStore.group_stage.group[groupIndex].players[playerIndex - 1].name }}</td>
+    <tr v-for="player in cupStore.group_stage.group[groupIndex].players">
+      <td class="playername">{{ player.name }}</td>
       <td v-for="gameIndex in 5">
         <select
-            v-model="cupStore.group_stage.group[groupIndex].players[playerIndex-1].ranking[gameIndex-1]">
+            v-model="player.ranking[gameIndex-1]">
           <option
               v-for="ranking in 9"
-              v-bind="parseInt(ranking)-1">
+              v-bind="ranking-1">
             {{ ranking - 1 }}
+          </option>
+        </select>
+      </td>
+      <td>
+        <select
+            v-model="player.bonus">
+          <option @click="sendBonus(groupIndex)"
+                  v-for="bonus in 7"
+                  v-bind="bonus-4">
+            {{ bonus - 4 }}
           </option>
         </select>
       </td>
@@ -106,6 +123,10 @@ function sendResults(groupIndex, gameIndex) {
 </template>
 
 <style scoped>
+th {
+  color: white;
+}
+
 button {
   background-color: grey;
 }

@@ -100,10 +100,12 @@ onMounted(() => {
 
 .score {
   &-green {
+    font-weight: bold;
     background-color: lightgreen;
   }
 
   &-red {
+    font-weight: bold;
     background-color: indianred;
   }
 }

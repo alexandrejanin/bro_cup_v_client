@@ -113,10 +113,36 @@ export const useCupStore = defineStore('cup', {
                 },
             ).then(this.update);
         },
+        async sendGroupBonus(groupIndex, result) {
+            console.log(`sendGroupBonus(${groupIndex}, ${result})`)
+            const response = await axios.post(
+                `http://localhost:3000/poules_bonus/${groupIndex}`,
+                {
+                    result
+                },
+                {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.token,
+                    }
+                },
+            ).then(this.update);
+        },
         async setTournamentScore(matchId, playerIndex, score) {
             console.log(`setTournamentScore(${matchId}, ${playerIndex}, ${score})`)
             const response = await axios.post(
                 `http://localhost:3000/tournament/${matchId}/${playerIndex}/${score}`,
+                {},
+                {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.token,
+                    }
+                },
+            ).then(this.update);
+        },
+        async setBan(matchId, playerIndex, ban) {
+            console.log(`setBan(${matchId}, ${playerIndex}, ${ban})`)
+            const response = await axios.post(
+                `http://localhost:3000/tournament_ban/${matchId}/${playerIndex}/${ban}`,
                 {},
                 {
                     headers: {

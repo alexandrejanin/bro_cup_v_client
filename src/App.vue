@@ -54,11 +54,6 @@ onMounted(() => {
     Poules
   </h2>
 
-  <button v-if="token && adminMode && cupStore.getNextPlayer()!==-1"
-          :onclick="drawPlayer">
-    Tirer un joueur
-  </button>
-
   <div>
     <PoolTable
         title="Poule A"
@@ -69,6 +64,11 @@ onMounted(() => {
         :group-index=1
     />
   </div>
+
+  <button v-if="token && adminMode && cupStore.getNextPlayer()!==-1"
+          :onclick="drawPlayer">
+    Tirer un joueur
+  </button>
 
   <div v-if="token && adminMode">
     <h3>ADMIN : Résultats poules</h3>
@@ -82,7 +82,7 @@ onMounted(() => {
     />
   </div>
 
-  <div v-if="cupStore.tournamentTree">
+  <div v-if="cupStore.tournamentTree?.default?.players">
     <h2>
       Tournoi
     </h2>
