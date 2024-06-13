@@ -4,7 +4,7 @@ import {storeToRefs} from "pinia";
 import {onMounted} from "vue";
 
 const cupStore = useCupStore();
-const {group_stage, group_ranking} = storeToRefs(cupStore);
+const {group_ranking} = storeToRefs(cupStore);
 
 defineProps({
   title: String,
@@ -17,7 +17,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <table class="pooltable">
+  <table v-if="group_ranking"
+         class="pooltable">
     <tr>
       <th class="name" colspan="100%">
         {{ title }}
@@ -36,8 +37,8 @@ onMounted(() => {
             ]">
               <img
                   :class="{
-                    'game-selected': index === group_stage.group[groupIndex].game_index,
-                    'game-over': index < group_stage.group[groupIndex].game_index,
+                    'game-selected': index === group_ranking.group[groupIndex].game_index,
+                    'game-over': index < group_ranking.group[groupIndex].game_index,
                   }"
                   style="vertical-align: middle;height: 50px;padding: 5px;border-radius: 5px"
                   :src="image"
@@ -49,9 +50,8 @@ onMounted(() => {
     </tr>
     <tr
         v-if="group_ranking"
-        v-for="(player,index) in group_ranking.group[groupIndex].players"
-        class="player-row">
-      <td class="player">
+        v-for="(player,index) in group_ranking.group[groupIndex].players">
+      <td :class="{player:true,odd:index%2!==0}">
         {{ player.name }}
       </td>
       <td
@@ -63,6 +63,10 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+td {
+  border-radius: 5px;
+}
+
 .pooltable {
   display: inline-block;
   border-radius: 7px;
@@ -79,10 +83,10 @@ onMounted(() => {
   color: white;
   padding: 5px 0;
   font-size: 12pt;
+}
 
-  &-row:nth-child(even) {
-    background-color: #303030;
-  }
+.odd {
+  background-color: var(--dark-gray);
 }
 
 .game {

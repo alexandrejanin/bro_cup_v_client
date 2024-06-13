@@ -3,17 +3,41 @@ import {useCupStore} from "./cupStore.js";
 import {storeToRefs} from "pinia";
 
 const cupStore = useCupStore();
-const {match_list} = storeToRefs(cupStore);
+const {timeTable} = storeToRefs(cupStore);
 </script>
 
 <template>
   <table>
-    <tr v-for="match of match_list">
-      {{ match }}
+    <tr v-for="time of Object.keys(timeTable).sort()">
+      <td class="time">
+        {{ time }}
+      </td>
+      <td v-for="match of timeTable[time]">
+        <table class="matchtable">
+          <tr class="label">{{ match.label }}</tr>
+          <tr v-if="match.players[0].name !== '???' || match.players[1].name !== '???'">
+            {{ match.players[0].name }} vs {{ match.players[1].name }}
+          </tr>
+        </table>
+      </td>
     </tr>
   </table>
 </template>
 
 <style scoped lang="scss">
+.time {
+  background-color: rgba(26, 26, 26, 0.5);
+  border-radius: 10px;
+  height: 50px;
+  width: 120px;
+}
 
+.matchtable {
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.label {
+  font-weight: bold;
+}
 </style>

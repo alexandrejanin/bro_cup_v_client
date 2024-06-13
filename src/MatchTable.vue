@@ -14,6 +14,14 @@ const banIcons = ref([
   '../src/assets/geoguessr-square.png',
 ]);
 
+function hasBans(match) {
+  return match.players[0].ban >= 0 || match.players[1].ban >= 0;
+}
+
+function isInProgress(match) {
+  return match.winner_id < 0 && hasBans(match);
+}
+
 defineProps({
   match: {
     type: {
@@ -30,9 +38,10 @@ defineProps({
 </script>
 
 <template>
-  <table class="match-table">
-    <tr>
-      <th v-if="adminMode||match.label && !match.label.includes('/')"
+  <table
+      :style="{borderRadius:'5px', backgroundColor: isInProgress(match) ? '#dc870e' : '#1a1a1a'}">
+    <tr v-if="adminMode||(match.label && match.label.includes('Final'))||hasBans(match)">
+      <th v-if="adminMode||(match.label && match.label.includes('Final'))"
           colspan="2"
           class="label">
         {{ match.label }}
@@ -68,7 +77,8 @@ defineProps({
             {{ i - 1 }}
           </option>
         </select>
-        <div v-else>
+        <div v-else
+             class="score.">
           {{ player.score }}
         </div>
       </td>
@@ -100,11 +110,6 @@ td {
   border-radius: 5px;
 }
 
-.match-table {
-  background-color: #1a1a1a;
-  border-radius: 5px;
-}
-
 .ban {
   background-color: indianred;
   padding: 3px;
@@ -117,19 +122,21 @@ td {
   border-radius: 5px;
 }
 
+.score {
+  font-weight: bold;
+}
+
 .won {
   font-weight: bold;
   background-color: var(--bc-green);
 }
 
 .lost {
-  font-weight: bold;
   background-color: var(--bc-red);
 }
 
 .ongoing {
-  font-weight: bold;
-  background-color: slategray;
+  background-color: var(--gray);
 }
 
 .label {
@@ -138,6 +145,7 @@ td {
 }
 
 .bracket-player {
+  background-color: #1a1a1a;
   color: white;
   padding: 5px 12px;
   width: 80px;

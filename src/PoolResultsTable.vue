@@ -47,7 +47,7 @@ function sendBonus(groupIndex) {
       <th>
         <select v-if="group_stage.group[groupIndex]?.game_index !== undefined"
                 v-model="group_stage.group[groupIndex].game_index"
-                @change="setGame(this.groupIndex,group_stage.group[groupIndex].game_index)">
+                @change="setGame(groupIndex,group_stage.group[groupIndex].game_index)">
           <option
               :value="index"
               v-for="{game,index} in [

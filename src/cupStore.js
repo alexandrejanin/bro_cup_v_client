@@ -8,6 +8,7 @@ export const useCupStore = defineStore('cup', {
         group_stage: defaultGroupStage,
         group_ranking: null,
         match_list: null,
+        timeTable: null,
         tournamentTree: null,
     }),
     actions: {
@@ -51,6 +52,7 @@ export const useCupStore = defineStore('cup', {
             const response = await axios.get('http://localhost:3000/tournament/');
             if (response.status === 200) {
                 this.match_list = response.data.match_list;
+                this.timeTable = this.generateTimetable();
             } else {
                 console.error(response);
             }
@@ -64,29 +66,11 @@ export const useCupStore = defineStore('cup', {
                 console.error(response);
             }
         },
-        getNextPlayer() {
-            if (!this.group_stage?.group)
-                return -1;
-
-            for (let i = 0; i < 16; i++) {
-                const groupIndex = i % 2;
-                const playerIndex = Math.floor(i / 2);
-
-                if (this.group_stage.group[groupIndex].players[playerIndex].name === '???')
-                    return playerIndex + 8 * groupIndex;
-            }
-
-            return -1;
-        },
         async drawPlayer() {
             await this.update();
-            const index = this.getNextPlayer();
-
-            if (index < 0)
-                return;
 
             axios.post(
-                `http://localhost:3000/select_player/${index}`,
+                `http://localhost:3000/select_player`,
                 {},
                 {
                     headers: {
@@ -159,6 +143,19 @@ export const useCupStore = defineStore('cup', {
                 },
             ).then(this.update);
         },
+        generateTimetable() {
+            const timeTable = {};
+
+            for (let match of this.match_list) {
+                if (timeTable[match.date] === undefined)
+                    timeTable[match.date] = [];
+                timeTable[match.date].push(match);
+            }
+
+            console.log(timeTable);
+
+            return timeTable;
+        }
     },
 });
 
