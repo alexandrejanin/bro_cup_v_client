@@ -55,11 +55,11 @@ defineProps({
                     ongoing: match.winner_id < 0 }">
         <select
             v-if="token && adminMode"
-            v-model="player.score">
+            v-model="player.score"
+            @change="cupStore.setTournamentScore(match.id_match, playerIndex, player.score)">
           <option
               v-for="i in Math.ceil(match.nb_games/2)+1"
-              :value=i-1
-              @click="console.log(match);cupStore.setTournamentScore(match.id_match, playerIndex, player.score)">
+              :value=i-1>
             {{ i - 1 }}
           </option>
         </select>
