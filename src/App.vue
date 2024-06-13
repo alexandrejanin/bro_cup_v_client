@@ -38,7 +38,7 @@ onMounted(() => {
     <table style="width: 0;align-self: center">
       <tr>
         <td v-for="(text, index) in ['Poules', 'Tournoi', 'Planning']"
-            style="padding: 50px 20px">
+            style="padding: 30px 40px">
           <div class="tabtext"
                @click="page=index">
             {{ text }}
@@ -46,27 +46,6 @@ onMounted(() => {
         </td>
       </tr>
     </table>
-
-    <!--    <table>-->
-    <!--      <tr style="align-items: center">-->
-    <!--        <td @click="page=0">-->
-    <!--          <h2>-->
-    <!--            Poules-->
-    <!--          </h2>-->
-    <!--        </td>-->
-    <!--        <td @click="page=1">-->
-    <!--          <h2>-->
-    <!--            Tournoi-->
-    <!--          </h2>-->
-    <!--        </td>-->
-    <!--        <td @click="page=2">-->
-    <!--          <h2>-->
-    <!--            Planning-->
-    <!--          </h2>-->
-    <!--        </td>-->
-    <!--      </tr>-->
-    <!--    </table>-->
-
     <div v-if="page===0">
       <PoolTable
           title="Poule A"
@@ -139,8 +118,9 @@ onMounted(() => {
 
 .tabtext {
   color: white;
+  font-family: "Medicaments Churh", sans-serif;
   font-weight: bold;
-  font-size: 28pt;
+  font-size: 40pt;
   cursor: pointer;
 }
 </style>

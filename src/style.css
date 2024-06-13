@@ -87,3 +87,13 @@ button:focus-visible {
         background-color: #f9f9f9;
     }
 }
+
+@font-face {
+    font-family: 'Medicaments Churh';
+    src: url('../src/assets/Medicaments Church.ttf'),
+}
+
+@font-face {
+    font-family: 'Vintage Crafted Sans Regular';
+    src: url('../src/assets/Vintage Crafted Sans Regular.ttf'),
+}
