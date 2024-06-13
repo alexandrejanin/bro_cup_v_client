@@ -4,13 +4,17 @@
     font-weight: 400;
 
     color-scheme: light dark;
-    color: black;
+    background-image: url('../src/assets/bg.jpg');
+    background-size: cover;
     background-color: #5ca791;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    --bc-green:rgba(144, 238, 144, 0.6);
+    --bc-red:rgba(205, 92, 92, 0.8);
 }
 
 a {
@@ -65,7 +69,6 @@ button:focus-visible {
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
-    background-image: image('src/assets/bg.png');
 }
 
 @media (prefers-color-scheme: light) {

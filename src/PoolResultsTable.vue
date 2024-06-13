@@ -1,7 +1,9 @@
 <script setup>
 import {useCupStore} from "./cupStore.js";
+import {storeToRefs} from "pinia";
 
 const cupStore = useCupStore();
+const {group_stage} = storeToRefs(cupStore);
 
 defineProps({
   groupName: String,
@@ -43,9 +45,11 @@ function sendBonus(groupIndex) {
   <table class="poolresultstable">
     <tr>
       <th>
-        <select>
+        <select v-if="group_stage.group[groupIndex]?.game_index !== undefined"
+                v-model="group_stage.group[groupIndex].game_index"
+                @change="setGame(this.groupIndex,group_stage.group[groupIndex].game_index)">
           <option
-              @click="console.log('Fired');setGame(this.groupIndex,index)"
+              :value="index"
               v-for="{game,index} in [
                   {
                     game: 'Aucun jeu',
@@ -100,7 +104,7 @@ function sendBonus(groupIndex) {
       </th>
       <th>Bonus</th>
     </tr>
-    <tr v-for="player in cupStore.group_stage.group[groupIndex].players">
+    <tr v-for="player in group_stage.group[groupIndex].players">
       <td class="playername">{{ player.name }}</td>
       <td v-for="gameIndex in 5">
         <select
@@ -114,10 +118,10 @@ function sendBonus(groupIndex) {
       </td>
       <td>
         <select
-            v-model="player.bonus">
-          <option @click="sendBonus(groupIndex)"
-                  v-for="bonus in 7"
-                  v-bind="bonus-4">
+            v-model="player.bonus"
+            @change="sendBonus(groupIndex)">
+          <option v-for="bonus in 7"
+                  :value="bonus-4">
             {{ bonus - 4 }}
           </option>
         </select>

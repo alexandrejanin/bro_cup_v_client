@@ -29,27 +29,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-      v-if="!token || token.length === 0">
-    Identifiant : <input
-      type="text"
-      v-model="username"/>
-    <br/>
-    Mot de passe : <input
-      type="password"
-      v-model="password"/>
-    <br/>
-    <button :onclick="login">Connexion</button>
-  </div>
-  <div
-      v-else>
-    Mode Orga
-    <input
-        v-model="adminMode"
-        type="checkbox"/>
-  </div>
-
-  <h1>BRO CUP V</h1>
+  <img src="../src/assets/Sc_Logo_V1_decoupe.png"
+       class="bg-img"/>
 
   <h2>
     Poules
@@ -88,6 +69,7 @@ onMounted(() => {
       Tournoi
     </h2>
     <bracket-item
+        style="padding-right: 100px"
         :match="cupStore.tournamentTree.default"
     />
   </div>
@@ -95,10 +77,37 @@ onMounted(() => {
   <div>
     <MatchList/>
   </div>
+
+  <div
+      v-if="!token || token.length === 0">
+    Identifiant : <input
+      type="text"
+      v-model="username"/>
+    <br/>
+    Mot de passe : <input
+      type="password"
+      v-model="password"/>
+    <br/>
+    <button :onclick="login">Connexion</button>
+  </div>
+  <div
+      v-else>
+    Mode Orga
+    <input
+        v-model="adminMode"
+        type="checkbox"/>
+  </div>
 </template>
 
 <style>
+
 td {
   border-radius: 5px;
+}
+
+.bg-img {
+  height: 120px;
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
 </style>

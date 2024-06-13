@@ -43,16 +43,21 @@ defineProps({
         Bans
       </th>
     </tr>
-    <tr v-for="(player,playerIndex) in match.players">
-      <td class="bracket-player">
-        {{ player.name }}
-      </td>
-      <td
-          style="padding: 0 12px;width: 0"
+    <tr v-for="(player,playerIndex) in match.players"
+    >
+      <td class="bracket-player"
           :class="{
                     won: match.winner_id >= 0 && match.winner_id === playerIndex,
                     lost: match.winner_id >= 0 && match.winner_id !== playerIndex,
-                    ongoing: match.winner_id < 0 }">
+        }">
+        {{ player.name }}
+      </td>
+      <td style="padding: 0 12px;width: 0"
+          :class="{
+                    won: match.winner_id >= 0 && match.winner_id === playerIndex,
+                    lost: match.winner_id >= 0 && match.winner_id !== playerIndex,
+                    ongoing: match.winner_id < 0
+        }">
         <select
             v-if="token && adminMode"
             v-model="player.score"
@@ -73,10 +78,11 @@ defineProps({
              class="banicon">
       </td>
       <td v-if="adminMode">
-        <select v-model="player.ban">
+        <select
+            v-model="player.ban"
+            @change="cupStore.setBan(match.id_match, playerIndex, player.ban)">
           <option v-for="i in 6"
-                  v-bind="i-2"
-                  @click="cupStore.setBan(match.id_match, playerIndex, player.ban)">
+                  :value="i-2">
             {{ i - 2 }}
           </option>
         </select>
@@ -88,6 +94,10 @@ defineProps({
 <style scoped lang="scss">
 th {
   color: white;
+}
+
+td {
+  border-radius: 5px;
 }
 
 .match-table {
@@ -109,17 +119,17 @@ th {
 
 .won {
   font-weight: bold;
-  background-color: lightgreen;
+  background-color: var(--bc-green);
 }
 
 .lost {
   font-weight: bold;
-  background-color: indianred;
+  background-color: var(--bc-red);
 }
 
 .ongoing {
   font-weight: bold;
-  background-color: #fafab6;
+  background-color: slategray;
 }
 
 .label {
@@ -130,5 +140,6 @@ th {
 .bracket-player {
   color: white;
   padding: 5px 12px;
+  width: 80px;
 }
 </style>
