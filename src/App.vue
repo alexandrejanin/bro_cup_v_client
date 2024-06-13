@@ -5,6 +5,7 @@ import {onMounted, ref} from "vue";
 import {useCupStore} from "./cupStore.js";
 import {storeToRefs} from "pinia";
 import BracketItem from "./BracketItem.vue";
+import MatchList from "./MatchList.vue";
 
 const cupStore = useCupStore();
 const {token, adminMode} = storeToRefs(cupStore);
@@ -89,6 +90,10 @@ onMounted(() => {
     <bracket-item
         :match="cupStore.tournamentTree.default"
     />
+  </div>
+
+  <div>
+    <MatchList/>
   </div>
 </template>
 

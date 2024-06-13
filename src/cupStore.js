@@ -7,6 +7,7 @@ export const useCupStore = defineStore('cup', {
         adminMode: false,
         group_stage: defaultGroupStage,
         group_ranking: null,
+        match_list: null,
         tournamentTree: null,
     }),
     actions: {
@@ -21,17 +22,17 @@ export const useCupStore = defineStore('cup', {
                 console.log('Received auth token:' + this.token)
             }
         },
-        async update() {
-            await this.updateGroupStage();
-            await this.updateGroupRanking();
-            await this.updateTournament();
+        update() {
+            this.updateGroupStage().then();
+            this.updateGroupRanking().then();
+            this.updateMatchList().then();
+            this.updateTournament().then();
         },
         async updateGroupStage() {
             console.log('updateGroupStage');
             const response = await axios.get('http://localhost:3000/poules/');
             if (response.status === 200) {
                 this.group_stage = response.data;
-                console.log('Group stage :', this.group_stage);
             } else {
                 console.error(response);
             }
@@ -41,7 +42,15 @@ export const useCupStore = defineStore('cup', {
             const response = await axios.get('http://localhost:3000/poules_rank/');
             if (response.status === 200) {
                 this.group_ranking = response.data;
-                console.log('Group ranking :', this.group_ranking)
+            } else {
+                console.error(response);
+            }
+        },
+        async updateMatchList() {
+            console.log('updateMatchList');
+            const response = await axios.get('http://localhost:3000/tournament/');
+            if (response.status === 200) {
+                this.match_list = response.data.match_list;
             } else {
                 console.error(response);
             }
@@ -51,7 +60,6 @@ export const useCupStore = defineStore('cup', {
             const response = await axios.get('http://localhost:3000/tournament_tree/');
             if (response.status === 200) {
                 this.tournamentTree = response.data.tournamentTree;
-                console.log('Tournament tree :', this.tournamentTree)
             } else {
                 console.error(response);
             }

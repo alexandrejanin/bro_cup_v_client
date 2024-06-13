@@ -1,26 +1,18 @@
 <script setup>
 import {storeToRefs} from "pinia";
 import {useCupStore} from "./cupStore.js";
+import {ref} from "vue";
 
 const cupStore = useCupStore();
 const {token, adminMode} = storeToRefs(cupStore);
 
-const banIcons = [
+const banIcons = ref([
   '../src/assets/quake.webp',
   '../src/assets/gdash.svg',
   '../src/assets/trackmania.png',
   '../src/assets/golf.png',
   '../src/assets/geoguessr-square.png',
-];
-
-const gameNames = [
-  'Aucun',
-  'Quake',
-  'GDash',
-  'TM',
-  'Golf',
-  'Geo'
-];
+]);
 
 defineProps({
   match: {
@@ -30,14 +22,11 @@ defineProps({
       date: String,
       players: Array,
       nb_games: Number,
+      winner_id: Number,
     },
     required: true,
   },
 });
-
-function isWinning(match, playerIndex) {
-  return match.players[playerIndex].score >= Math.ceil(match.nb_games / 2);
-}
 </script>
 
 <template>
@@ -61,9 +50,9 @@ function isWinning(match, playerIndex) {
       <td
           style="padding: 0 12px;width: 0"
           :class="{
-                    won: isWinning(match,playerIndex),
-                    lost: isWinning(match,(playerIndex+1)%2),
-                    ongoing: !isWinning(match,playerIndex) && !isWinning(match,(playerIndex+1)%2)}">
+                    won: match.winner_id >= 0 && match.winner_id === playerIndex,
+                    lost: match.winner_id >= 0 && match.winner_id !== playerIndex,
+                    ongoing: match.winner_id < 0 }">
         <select
             v-if="token && adminMode"
             v-model="player.score">
