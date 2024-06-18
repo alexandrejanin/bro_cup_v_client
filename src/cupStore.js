@@ -1,6 +1,8 @@
 import {defineStore} from "pinia";
 import axios from "axios";
 
+const apiUrl = 'https://bro-cup-v-d9f917c49c5c.herokuapp.com';
+
 export const useCupStore = defineStore('cup', {
     state: () => ({
         token: '',
@@ -14,7 +16,7 @@ export const useCupStore = defineStore('cup', {
     actions: {
         async login(username, password) {
             console.log('login');
-            const response = await axios.post('http://localhost:3000/login', {username, password});
+            const response = await axios.post(`${apiUrl}/login`, {username, password});
             console.log(response);
 
             if (response.status === 200) {
@@ -31,7 +33,7 @@ export const useCupStore = defineStore('cup', {
         },
         async updateGroupStage() {
             console.log('updateGroupStage');
-            const response = await axios.get('http://localhost:3000/poules/');
+            const response = await axios.get(`${apiUrl}/poules/`);
             if (response.status === 200) {
                 this.group_stage = response.data;
             } else {
@@ -40,7 +42,7 @@ export const useCupStore = defineStore('cup', {
         },
         async updateGroupRanking() {
             console.log('updateGroupRanking');
-            const response = await axios.get('http://localhost:3000/poules_rank/');
+            const response = await axios.get(`${apiUrl}/poules_rank/`);
             if (response.status === 200) {
                 this.group_ranking = response.data;
             } else {
@@ -49,7 +51,7 @@ export const useCupStore = defineStore('cup', {
         },
         async updateMatchList() {
             console.log('updateMatchList');
-            const response = await axios.get('http://localhost:3000/tournament/');
+            const response = await axios.get(`${apiUrl}/tournament/`);
             if (response.status === 200) {
                 this.match_list = response.data.match_list;
                 this.timeTable = this.generateTimetable();
@@ -59,7 +61,7 @@ export const useCupStore = defineStore('cup', {
         },
         async updateTournament() {
             console.log('updateTournament');
-            const response = await axios.get('http://localhost:3000/tournament_tree/');
+            const response = await axios.get(`${apiUrl}/tournament_tree/`);
             if (response.status === 200) {
                 this.tournamentTree = response.data.tournamentTree;
             } else {
@@ -70,7 +72,7 @@ export const useCupStore = defineStore('cup', {
             await this.update();
 
             axios.post(
-                `http://localhost:3000/select_player`,
+                `${apiUrl}/select_player`,
                 {},
                 {
                     headers: {
@@ -82,7 +84,7 @@ export const useCupStore = defineStore('cup', {
         async setGroupGame(groupIndex, gameIndex) {
             console.log(`setGroupGame(${groupIndex}, ${gameIndex})`)
             const response = await axios.post(
-                `http://localhost:3000/change_group_game/${groupIndex}/${gameIndex}`,
+                `${apiUrl}/change_group_game/${groupIndex}/${gameIndex}`,
                 {},
                 {
                     headers: {
@@ -94,7 +96,7 @@ export const useCupStore = defineStore('cup', {
         async sendGroupResults(groupIndex, gameIndex, result) {
             console.log(`sendGroupResults(${groupIndex}, ${gameIndex}, ${result})`)
             const response = await axios.post(
-                `http://localhost:3000/poules/${groupIndex}/${gameIndex}`,
+                `${apiUrl}/poules/${groupIndex}/${gameIndex}`,
                 {
                     result
                 },
@@ -108,7 +110,7 @@ export const useCupStore = defineStore('cup', {
         async sendGroupBonus(groupIndex, result) {
             console.log(`sendGroupBonus(${groupIndex}, ${result})`)
             const response = await axios.post(
-                `http://localhost:3000/poules_bonus/${groupIndex}`,
+                `${apiUrl}/poules_bonus/${groupIndex}`,
                 {
                     result
                 },
@@ -122,7 +124,7 @@ export const useCupStore = defineStore('cup', {
         async setTournamentScore(matchId, playerIndex, score) {
             console.log(`setTournamentScore(${matchId}, ${playerIndex}, ${score})`)
             const response = await axios.post(
-                `http://localhost:3000/tournament/${matchId}/${playerIndex}/${score}`,
+                `${apiUrl}/${matchId}/${playerIndex}/${score}`,
                 {},
                 {
                     headers: {
@@ -134,7 +136,7 @@ export const useCupStore = defineStore('cup', {
         async setBan(matchId, playerIndex, ban) {
             console.log(`setBan(${matchId}, ${playerIndex}, ${ban})`)
             const response = await axios.post(
-                `http://localhost:3000/tournament_ban/${matchId}/${playerIndex}/${ban}`,
+                `${apiUrl}/tournament_ban/${matchId}/${playerIndex}/${ban}`,
                 {},
                 {
                     headers: {
