@@ -6,6 +6,7 @@ import {useCupStore} from "./cupStore.js";
 import {storeToRefs} from "pinia";
 import BracketItem from "./BracketItem.vue";
 import MatchList from "./MatchList.vue";
+import TwitchVideo from "./TwitchPlayer.vue";
 
 const cupStore = useCupStore();
 const {token, adminMode, loginFailed} = storeToRefs(cupStore);
@@ -14,6 +15,8 @@ const username = ref('');
 const password = ref('');
 
 const page = ref(0);
+
+const displayAdminLogin = ref(false);
 
 function login() {
   cupStore.login(username.value, password.value);
@@ -46,7 +49,7 @@ onMounted(() => {
 
     <table style="width: 0;align-self: center">
       <tr>
-        <td v-for="(text, index) in ['Poules', 'Tournoi', 'Planning']"
+        <td v-for="(text, index) in ['Stream', 'Poules', 'Tournoi', 'Planning']"
             style="padding: 30px 40px">
           <div class="tabtext"
                @click="page=index"
@@ -57,6 +60,10 @@ onMounted(() => {
       </tr>
     </table>
     <div v-if="page===0">
+      <twitch-video></twitch-video>
+    </div>
+
+    <div v-if="page===1">
       <PoolTable
           title="Poule A"
           :group-index=0
@@ -85,7 +92,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div v-if="page===1">
+    <div v-if="page===2">
       <div v-if="cupStore.tournamentTree?.default?.players">
         <bracket-item
             style="padding-right: 100px"
@@ -97,30 +104,34 @@ onMounted(() => {
       </div>
     </div>
 
-    <div v-if="page===2">
+    <div v-if="page===3">
       <MatchList/>
     </div>
 
     <div
         v-if="!token || token.length === 0"
-        style="padding-top: 50px;align-self: start">
-      Login Admin<br/>
-      Identifiant : <input
-        type="text"
-        v-model="username"
-        @keydown="onKeyDown"
-        @input="hideLoginFailedMessage"/>
-      <br/>
-      Mot de passe : <input
-        type="password"
-        v-model="password"
-        @keydown="onKeyDown"
-        @input="hideLoginFailedMessage"/>
-      <br/>
-      <div v-if="loginFailed" style="color: red">
-        Mauvais identifiants !
+        style="padding-top: 50px;align-self: end">
+      <p @click="()=>{displayAdminLogin=!displayAdminLogin;}">
+        Login Orga
+      </p><br/>
+      <div v-if="displayAdminLogin">
+        Identifiant : <input
+          type="text"
+          v-model="username"
+          @keydown="onKeyDown"
+          @input="hideLoginFailedMessage"/>
+        <br/>
+        Mot de passe : <input
+          type="password"
+          v-model="password"
+          @keydown="onKeyDown"
+          @input="hideLoginFailedMessage"/>
+        <br/>
+        <div v-if="loginFailed" style="color: red">
+          Mauvais identifiants !
+        </div>
+        <button @click="login">Connexion</button>
       </div>
-      <button :onclick="login">Connexion</button>
     </div>
     <div v-else
          style="padding-top: 50px">
