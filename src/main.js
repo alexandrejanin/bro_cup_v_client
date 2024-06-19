@@ -4,7 +4,7 @@ import App from './App.vue'
 import {createPinia} from "pinia";
 import './twitch.v1.js';
 
-if (location.protocol !== 'https:') {
+if (location.protocol !== 'https:' && !location.href.includes('localhost')) {
     location.replace(`https:${location.href.substring(location.protocol.length)}`);
 }
 
