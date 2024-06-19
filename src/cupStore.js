@@ -124,7 +124,7 @@ export const useCupStore = defineStore('cup', {
         async setTournamentScore(matchId, playerIndex, score) {
             console.log(`setTournamentScore(${matchId}, ${playerIndex}, ${score})`)
             const response = await axios.post(
-                `${apiUrl}/${matchId}/${playerIndex}/${score}`,
+                `${apiUrl}/tournament/${matchId}/${playerIndex}/${score}`,
                 {},
                 {
                     headers: {
