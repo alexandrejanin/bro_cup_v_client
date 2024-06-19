@@ -4,8 +4,6 @@
     font-weight: 400;
 
     color-scheme: light dark;
-    background-image: url('../src/assets/bg.jpg');
-    background-size: cover;
     background-color: #5ca791;
 
     font-synthesis: none;
@@ -17,6 +15,11 @@
     --bc-red: rgba(205, 92, 92, 0.8);
     --gray: #3d3d49;
     --dark-gray: #262628
+}
+
+body {
+    background-image: url('../src/assets/bg.jpg');
+    background-size: cover;
 }
 
 a {
