@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import axios from "axios";
 
-const apiUrl = 'ec2-35-180-97-125.eu-west-3.compute.amazonaws.com:3000';
+const apiUrl = 'http://server.brocup.fr';
 
 export const useCupStore = defineStore('cup', {
     state: () => ({
