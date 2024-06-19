@@ -40,7 +40,8 @@ body {
     min-width: 320px;
     min-height: 100vh;
     background-image: url('../src/assets/bg.jpg');
-    background-size: auto;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 h1 {
