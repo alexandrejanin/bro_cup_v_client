@@ -16,7 +16,7 @@ async function randomRanks(groupIndex) {
     for (let playerIndex = 0; playerIndex < 8; playerIndex++)
       results[playerIndex] = Math.ceil(8 * Math.random());
 
-    await cupStore.sendGroupResults(groupIndex, gameIndex, results);
+    cupStore.sendGroupResults(groupIndex, gameIndex, results).then();
   }
 }
 
@@ -24,12 +24,14 @@ function setGame(groupIndex, gameIndex) {
   cupStore.setGroupGame(groupIndex, gameIndex);
 }
 
-function sendResults(groupIndex, gameIndex) {
-  const result = [];
-  for (let playerIndex = 0; playerIndex < 8; playerIndex++) {
-    result[playerIndex] = parseInt(cupStore.group_stage.group[groupIndex].players[playerIndex].ranking[gameIndex]);
+async function sendResults(groupIndex) {
+  for (let gameIndex = 0; gameIndex < 5; gameIndex++) {
+    const results = [];
+    for (let playerIndex = 0; playerIndex < 8; playerIndex++) {
+      results[playerIndex] = parseInt(cupStore.group_stage.group[groupIndex].players[playerIndex].ranking[gameIndex]);
+    }
+    cupStore.sendGroupResults(groupIndex, gameIndex, results).then();
   }
-  cupStore.sendGroupResults(groupIndex, gameIndex, result);
 }
 
 function sendBonus(groupIndex) {
@@ -134,7 +136,7 @@ function sendBonus(groupIndex) {
         </button>
       </td>
       <td v-for="gameIndex in 5">
-        <button @click="sendResults(groupIndex, gameIndex-1)">
+        <button @click="sendResults(groupIndex)">
           Valider
         </button>
       </td>

@@ -21,6 +21,8 @@
 body {
     background-image: url('../src/assets/bg.jpg');
     background-size: cover;
+    min-height: 100%;
+    min-width: 100%;
 }
 
 a {

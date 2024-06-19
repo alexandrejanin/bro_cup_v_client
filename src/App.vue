@@ -103,7 +103,8 @@ onMounted(() => {
 
     <div
         v-if="!token || token.length === 0"
-        style="padding-top: 50px">
+        style="padding-top: 50px;align-self: start">
+      Login Admin<br/>
       Identifiant : <input
         type="text"
         v-model="username"
