@@ -12,7 +12,7 @@ export default {
     const options = {
       width: 854,
       height: 480,
-      channel: 'otplol_',
+      channel: 'brocuplive',
     };
     this.player = new Twitch.Player(this.$refs.twitchVideo, options);
     this.player.setVolume(0.5);
