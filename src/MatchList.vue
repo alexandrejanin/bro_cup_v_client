@@ -13,7 +13,7 @@ const {timeTable} = storeToRefs(cupStore);
         {{ time }}
       </td>
       <td v-for="match of timeTable[time]">
-        <table class="matchtable">
+        <table class="match">
           <tr class="label">{{ match.label }}</tr>
           <tr v-if="match.players[0].name !== '???' || match.players[1].name !== '???'">
             {{ match.players[0].name }} vs {{ match.players[1].name }}
@@ -30,9 +30,10 @@ const {timeTable} = storeToRefs(cupStore);
   border-radius: 10px;
   height: 50px;
   width: 120px;
+  font-size: 18pt;
 }
 
-.matchtable {
+.match {
   align-items: center;
   padding: 10px 20px;
 }

@@ -8,7 +8,7 @@ import BracketItem from "./BracketItem.vue";
 import MatchList from "./MatchList.vue";
 
 const cupStore = useCupStore();
-const {token, adminMode} = storeToRefs(cupStore);
+const {token, adminMode, loginFailed} = storeToRefs(cupStore);
 
 const username = ref('');
 const password = ref('');
@@ -16,8 +16,17 @@ const password = ref('');
 const page = ref(0);
 
 function login() {
-  console.log('login');
   cupStore.login(username.value, password.value);
+}
+
+function onKeyDown(event) {
+  if (event.key === "Enter") {
+    login();
+  }
+}
+
+function hideLoginFailedMessage() {
+  loginFailed.value = false;
 }
 
 function drawPlayer() {
@@ -40,7 +49,8 @@ onMounted(() => {
         <td v-for="(text, index) in ['Poules', 'Tournoi', 'Planning']"
             style="padding: 30px 40px">
           <div class="tabtext"
-               @click="page=index">
+               @click="page=index"
+               :style="{color:page===index?'var(--bc-yellow)':'white'}">
             {{ text }}
           </div>
         </td>
@@ -75,12 +85,16 @@ onMounted(() => {
       </div>
     </div>
 
-    <div v-if="page===1&&cupStore.tournamentTree?.default?.players">
-
-      <bracket-item
-          style="padding-right: 100px"
-          :match="cupStore.tournamentTree.default"
-      />
+    <div v-if="page===1">
+      <div v-if="cupStore.tournamentTree?.default?.players">
+        <bracket-item
+            style="padding-right: 100px"
+            :match="cupStore.tournamentTree.default"
+        />
+      </div>
+      <div v-else style="font-size: 16pt">
+        <i>Poules en cours, le tournoi arrive après !</i>
+      </div>
     </div>
 
     <div v-if="page===2">
@@ -88,19 +102,27 @@ onMounted(() => {
     </div>
 
     <div
-        v-if="!token || token.length === 0">
+        v-if="!token || token.length === 0"
+        style="padding-top: 50px">
       Identifiant : <input
         type="text"
-        v-model="username"/>
+        v-model="username"
+        @keydown="onKeyDown"
+        @input="hideLoginFailedMessage"/>
       <br/>
       Mot de passe : <input
         type="password"
-        v-model="password"/>
+        v-model="password"
+        @keydown="onKeyDown"
+        @input="hideLoginFailedMessage"/>
       <br/>
+      <div v-if="loginFailed" style="color: red">
+        Mauvais identifiants !
+      </div>
       <button :onclick="login">Connexion</button>
     </div>
-    <div
-        v-else>
+    <div v-else
+         style="padding-top: 50px">
       Mode Orga
       <input
           v-model="adminMode"
@@ -117,8 +139,7 @@ onMounted(() => {
 }
 
 .tabtext {
-  color: white;
-  font-family: "Medicaments Churh", sans-serif;
+  font-family: "Vintage Crafted Sans Regular", sans-serif;
   font-weight: bold;
   font-size: 40pt;
   cursor: pointer;

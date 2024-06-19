@@ -13,8 +13,9 @@
 
     --bc-green: rgba(144, 238, 144, 0.6);
     --bc-red: rgba(205, 92, 92, 0.8);
+    --bc-yellow: rgb(202, 202, 158);
     --gray: #3d3d49;
-    --dark-gray: #262628
+    --dark-gray: #262628;
 }
 
 body {
@@ -92,7 +93,7 @@ button:focus-visible {
 }
 
 @font-face {
-    font-family: 'Medicaments Churh';
+    font-family: 'Medicaments Church';
     src: url('../src/assets/Medicaments Church.ttf'),
 }
 

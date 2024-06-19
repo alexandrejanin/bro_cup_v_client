@@ -7,6 +7,7 @@ export const useCupStore = defineStore('cup', {
     state: () => ({
         token: '',
         adminMode: false,
+        loginFailed: false,
         group_stage: defaultGroupStage,
         group_ranking: null,
         match_list: null,
@@ -15,14 +16,17 @@ export const useCupStore = defineStore('cup', {
     }),
     actions: {
         async login(username, password) {
-            console.log('login');
-            const response = await axios.post(`${apiUrl}/login`, {username, password});
+            this.loginFailed = false;
+            const response = await axios.post(`${apiUrl}/login`, {username, password}, {validateStatus: _ => true});
             console.log(response);
 
             if (response.status === 200) {
                 this.token = response.data.token;
                 this.adminMode = true;
-                console.log('Received auth token:' + this.token)
+                console.log('Received auth token:' + this.token);
+            } else if (response.status === 401) {
+                console.log('Login failed');
+                this.loginFailed = true;
             }
         },
         update() {
