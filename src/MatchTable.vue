@@ -19,7 +19,7 @@ function hasBans(match) {
 }
 
 function isInProgress(match) {
-  return match.winner_id < 0 && hasBans(match);
+  return match.winner_id < 0 && (match.players[0].score > 0 || match.players[1].score > 0 || hasBans(match));
 }
 
 defineProps({
@@ -39,7 +39,7 @@ defineProps({
 
 <template>
   <table
-      :style="{borderRadius:'5px', backgroundColor: isInProgress(match) ? '#dc870e' : '#1a1a1a'}">
+      :style="{borderRadius:'5px', backgroundColor: isInProgress(match) ? '#ff9600' : '#1a1a1a'}">
     <tr v-if="adminMode||(match.label && match.label.includes('Final'))||hasBans(match)">
       <th v-if="adminMode||(match.label && match.label.includes('Final'))"
           colspan="2"
@@ -48,7 +48,7 @@ defineProps({
       </th>
       <th v-else
           colspan="2"/>
-      <th v-if="cupStore.adminMode||match.players[0].ban >= 0 || match.players[1].ban >= 0">
+      <th v-if="match.nb_games<5&&cupStore.adminMode||match.players[0].ban >= 0 || match.players[1].ban >= 0">
         Bans
       </th>
     </tr>
@@ -87,7 +87,7 @@ defineProps({
         <img :src="banIcons[player.ban]"
              class="banicon">
       </td>
-      <td v-if="adminMode">
+      <td v-if="match.nb_games<5&&adminMode">
         <select
             v-model="player.ban"
             @change="cupStore.setBan(match.id_match, playerIndex, player.ban)">

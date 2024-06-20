@@ -20,8 +20,19 @@ const displayAdminLogin = ref(false);
 
 const links = [
   {
+    href: 'https://www.twitch.tv/brocuplive',
+    src: '../src/assets/twitch.webp',
+    alt: 'discord',
+  },
+  {
+    href: 'https://www.youtube.com/@brocup2630',
+    src: '../src/assets/youtube.webp',
+    alt: 'discord',
+  },
+  {
     href: 'https://discord.gg/nYT8zfmB7M',
     src: '../src/assets/discord.webp',
+    alt: 'discord',
   },
 ];
 
@@ -119,19 +130,21 @@ onMounted(() => {
       <MatchList/>
     </div>
 
-    <table>
-      <tr>
-        <td>
-          <a href="https://discord.gg/nYT8zfmB7M" target="_blank">
-            <img alt="discord" src="../src/assets/discord.webp" width="50px" style="padding-top: 50px"/>
-          </a>
-        </td>
-      </tr>
-    </table>
+    <div style="display: inline-block">
+      <a v-for="link of links"
+         :href="link.href"
+         target="_blank">
+        <img
+            :alt="link.alt"
+            :src="link.src"
+            width="50px"
+            style="padding: 50px 20px"/>
+      </a>
+    </div>
 
     <div
         v-if="!token || token.length === 0"
-        style="padding-top: 50px;align-self: end">
+        style="align-self: end">
       <p @click="()=>{displayAdminLogin=!displayAdminLogin;}">
         Login Orga
       </p><br/>
@@ -154,15 +167,14 @@ onMounted(() => {
         <button @click="login">Connexion</button>
       </div>
     </div>
-    <div v-else
-         style="padding-top: 50px">
+    <div v-else>
       Mode Orga
       <input
           v-model="adminMode"
           type="checkbox"/>
-      <button
-          style="background-color: red;margin-left: 300px"
-          @click="resetCup">
+      <button v-if="adminMode"
+              style="background-color: red;margin-left: 300px"
+              @click="resetCup">
         RESET LE TOURNOI
       </button>
     </div>
