@@ -7,9 +7,10 @@ import {storeToRefs} from "pinia";
 import BracketItem from "./BracketItem.vue";
 import MatchList from "./MatchList.vue";
 import TwitchVideo from "./TwitchPlayer.vue";
+import CurrentGameFrame from "./CurrentGameFrame.vue";
 
 const cupStore = useCupStore();
-const {token, adminMode, loginFailed} = storeToRefs(cupStore);
+const {token, adminMode, loginFailed, current_game} = storeToRefs(cupStore);
 
 const username = ref('');
 const password = ref('');
@@ -30,7 +31,7 @@ const links = [
     alt: 'discord',
   },
   {
-    href: 'https://discord.gg/nYT8zfmB7M',
+    href: ' https://discord.gg/jA8UB86r9X',
     src: '../src/assets/discord.webp',
     alt: 'discord',
   },
@@ -74,7 +75,7 @@ onMounted(() => {
         <td v-for="(text, index) in ['Stream', 'Poules', 'Tournoi', 'Planning']"
             style="padding: 30px 40px">
           <div class="tabtext"
-               @click="page=index"
+               @click="page=index;cupStore.update()"
                :style="{color:page===index?'var(--bc-yellow)':'white'}">
             {{ text }}
           </div>
@@ -83,6 +84,9 @@ onMounted(() => {
     </table>
     <div v-if="page===0">
       <twitch-video></twitch-video>
+    </div>
+    <div v-if="current_game&&(page===0||page===3)">
+      <current-game-frame/>
     </div>
 
     <div v-if="page===1">
@@ -193,5 +197,10 @@ onMounted(() => {
   font-weight: bold;
   font-size: 40pt;
   cursor: pointer;
+}
+
+.currentGame {
+  font-size: 24pt;
+  font-family: "Vintage Crafted Sans Regular", sans-serif;
 }
 </style>

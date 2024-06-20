@@ -12,6 +12,7 @@ export const useCupStore = defineStore('cup', {
             group_ranking: null,
             tournament_match: null,
             tournament_tree: null,
+            current_game: null,
             timeTable: null,
         }),
         actions: {
@@ -36,12 +37,14 @@ export const useCupStore = defineStore('cup', {
                     this.group_ranking = response.data.group_rank;
                     this.tournament_match = response.data.tournament_match;
                     this.tournament_tree = response.data.tournament_tree.tournamentTree;
+                    this.current_game = response.data.current_game;
                     this.timeTable = this.generateTimetable();
                     console.log('updated:');
                     console.log(this.group_stage);
                     console.log(this.group_ranking);
                     console.log(this.tournament_match);
                     console.log(this.tournament_tree);
+                    console.log(this.current_game);
                     console.log(this.timeTable);
                 } else {
                     console.error(response);

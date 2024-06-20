@@ -36,6 +36,7 @@ function isOver(match) {
 <style scoped lang="scss">
 .matchlist {
   margin: 0 auto;
+  padding-top: 50px;
   border-radius: 11px;
 }
 
