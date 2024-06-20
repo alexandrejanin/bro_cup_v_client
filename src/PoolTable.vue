@@ -1,18 +1,13 @@
 <script setup>
 import {useCupStore} from "./cupStore.js";
 import {storeToRefs} from "pinia";
-import {onMounted} from "vue";
 
 const cupStore = useCupStore();
-const {group_ranking} = storeToRefs(cupStore);
+const {group_ranking, group_stage} = storeToRefs(cupStore);
 
 defineProps({
   title: String,
   groupIndex: Number,
-});
-
-onMounted(() => {
-  cupStore.updateGroupRanking();
 });
 </script>
 
@@ -21,7 +16,7 @@ onMounted(() => {
          class="pooltable">
     <tr>
       <th class="name" colspan="100%">
-        {{ title }}
+        {{ title }} - {{ group_stage.group[groupIndex].date }}
       </th>
     </tr>
     <tr>
@@ -104,11 +99,13 @@ td {
 
 .score {
   &-green {
+    width: 50px;
     font-weight: bold;
     background-color: var(--bc-green);
   }
 
   &-red {
+    width: 50px;
     font-weight: bold;
     background-color: var(--bc-red);
   }

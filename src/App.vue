@@ -18,6 +18,13 @@ const page = ref(0);
 
 const displayAdminLogin = ref(false);
 
+const links = [
+  {
+    href: 'https://discord.gg/nYT8zfmB7M',
+    src: '../src/assets/discord.webp',
+  },
+];
+
 function login() {
   cupStore.login(username.value, password.value);
 }
@@ -34,6 +41,10 @@ function hideLoginFailedMessage() {
 
 function drawPlayer() {
   cupStore.drawPlayer();
+}
+
+function resetCup() {
+  cupStore.resetCup();
 }
 
 onMounted(() => {
@@ -93,10 +104,10 @@ onMounted(() => {
     </div>
 
     <div v-if="page===2">
-      <div v-if="cupStore.tournamentTree?.default?.players">
+      <div v-if="cupStore.tournament_tree?.default?.players">
         <bracket-item
             style="padding-right: 100px"
-            :match="cupStore.tournamentTree.default"
+            :match="cupStore.tournament_tree.default"
         />
       </div>
       <div v-else style="font-size: 16pt">
@@ -107,6 +118,16 @@ onMounted(() => {
     <div v-if="page===3">
       <MatchList/>
     </div>
+
+    <table>
+      <tr>
+        <td>
+          <a href="https://discord.gg/nYT8zfmB7M" target="_blank">
+            <img alt="discord" src="../src/assets/discord.webp" width="50px" style="padding-top: 50px"/>
+          </a>
+        </td>
+      </tr>
+    </table>
 
     <div
         v-if="!token || token.length === 0"
@@ -139,6 +160,11 @@ onMounted(() => {
       <input
           v-model="adminMode"
           type="checkbox"/>
+      <button
+          style="background-color: red;margin-left: 300px"
+          @click="resetCup">
+        RESET LE TOURNOI
+      </button>
     </div>
   </div>
 </template>

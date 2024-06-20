@@ -7,7 +7,7 @@ const {timeTable} = storeToRefs(cupStore);
 </script>
 
 <template>
-  <table>
+  <table v-if="timeTable" class="matchlist">
     <tr v-for="time of Object.keys(timeTable).sort()">
       <td class="time">
         {{ time }}
@@ -25,6 +25,12 @@ const {timeTable} = storeToRefs(cupStore);
 </template>
 
 <style scoped lang="scss">
+.matchlist {
+  margin: 0 auto;
+  background-color: rgba(26, 26, 26, 0.5);
+  border-radius: 11px;
+}
+
 .time {
   background-color: rgba(26, 26, 26, 0.5);
   border-radius: 10px;

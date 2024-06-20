@@ -4,166 +4,147 @@ import axios from "axios";
 const apiUrl = 'https://server.brocup.fr';
 
 export const useCupStore = defineStore('cup', {
-    state: () => ({
-        token: '',
-        adminMode: false,
-        loginFailed: false,
-        group_stage: defaultGroupStage,
-        group_ranking: null,
-        match_list: null,
-        timeTable: null,
-        tournamentTree: null,
-    }),
-    actions: {
-        async login(username, password) {
-            this.loginFailed = false;
-            const response = await axios.post(`${apiUrl}/login`, {username, password}, {validateStatus: _ => true});
-            console.log(response);
+        state: () => ({
+            token: '',
+            adminMode: false,
+            loginFailed: false,
+            group_stage: defaultGroupStage,
+            group_ranking: null,
+            tournament_match: null,
+            tournament_tree: null,
+            timeTable: null,
+        }),
+        actions: {
+            async login(username, password) {
+                this.loginFailed = false;
+                const response = await axios.post(`${apiUrl}/login`, {username, password}, {validateStatus: _ => true});
+                console.log(response);
 
-            if (response.status === 200) {
-                this.token = response.data.token;
-                this.adminMode = true;
-                console.log('Received auth token:' + this.token);
-            } else if (response.status === 401) {
-                console.log('Login failed');
-                this.loginFailed = true;
-            }
-        },
-        update() {
-            this.updateGroupStage().then();
-            this.updateGroupRanking().then();
-            this.updateMatchList().then();
-            this.updateTournament().then();
-        },
-        async updateGroupStage() {
-            console.log('updateGroupStage');
-            const response = await axios.get(`${apiUrl}/poules/`);
-            if (response.status === 200) {
-                this.group_stage = response.data;
-            } else {
-                console.error(response);
-            }
-        },
-        async updateGroupRanking() {
-            console.log('updateGroupRanking');
-            const response = await axios.get(`${apiUrl}/poules_rank/`);
-            if (response.status === 200) {
-                this.group_ranking = response.data;
-            } else {
-                console.error(response);
-            }
-        },
-        async updateMatchList() {
-            console.log('updateMatchList');
-            const response = await axios.get(`${apiUrl}/tournament/`);
-            if (response.status === 200) {
-                this.match_list = response.data.match_list;
-                this.timeTable = this.generateTimetable();
-            } else {
-                console.error(response);
-            }
-        },
-        async updateTournament() {
-            console.log('updateTournament');
-            const response = await axios.get(`${apiUrl}/tournament_tree/`);
-            if (response.status === 200) {
-                this.tournamentTree = response.data.tournamentTree;
-            } else {
-                console.error(response);
-            }
-        },
-        async drawPlayer() {
-            await this.update();
+                if (response.status === 200) {
+                    this.token = response.data.token;
+                    this.adminMode = true;
+                    console.log('Received auth token:' + this.token);
+                } else if (response.status === 401) {
+                    console.log('Login failed');
+                    this.loginFailed = true;
+                }
+            },
+            async update() {
+                const response = await axios.get(`${apiUrl}/cup/`);
+                if (response.status === 200) {
+                    this.group_stage = response.data.group_stage;
+                    this.group_ranking = response.data.group_rank;
+                    this.tournament_match = response.data.tournament_match;
+                    this.tournament_tree = response.data.tournament_tree.tournamentTree;
+                    this.timeTable = this.generateTimetable();
+                    console.log('updated:');
+                    console.log(this.group_stage);
+                    console.log(this.group_ranking);
+                    console.log(this.tournament_match);
+                    console.log(this.tournament_tree);
+                    console.log(this.timeTable);
+                } else {
+                    console.error(response);
+                }
+            },
+            async drawPlayer() {
+                await this.update();
 
-            axios.post(
-                `${apiUrl}/select_player`,
-                {},
-                {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.token,
+                axios.post(
+                    `${apiUrl}/select_player`,
+                    {},
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + this.token,
+                        },
                     },
-                },
-            ).then(this.update);
-        },
-        async setGroupGame(groupIndex, gameIndex) {
-            console.log(`setGroupGame(${groupIndex}, ${gameIndex})`)
-            const response = await axios.post(
-                `${apiUrl}/change_group_game/${groupIndex}/${gameIndex}`,
-                {},
-                {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.token,
-                    }
-                },
-            ).then(this.update);
-        },
-        async sendGroupResults(groupIndex, gameIndex, result) {
-            console.log(`sendGroupResults(${groupIndex}, ${gameIndex}, ${result})`)
-            const response = await axios.post(
-                `${apiUrl}/poules/${groupIndex}/${gameIndex}`,
-                {
-                    result
-                },
-                {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.token,
-                    }
-                },
-            ).then(this.update);
-        },
-        async sendGroupBonus(groupIndex, result) {
-            console.log(`sendGroupBonus(${groupIndex}, ${result})`)
-            const response = await axios.post(
-                `${apiUrl}/poules_bonus/${groupIndex}`,
-                {
-                    result
-                },
-                {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.token,
-                    }
-                },
-            ).then(this.update);
-        },
-        async setTournamentScore(matchId, playerIndex, score) {
-            console.log(`setTournamentScore(${matchId}, ${playerIndex}, ${score})`)
-            const response = await axios.post(
-                `${apiUrl}/tournament/${matchId}/${playerIndex}/${score}`,
-                {},
-                {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.token,
-                    }
-                },
-            ).then(this.update);
-        },
-        async setBan(matchId, playerIndex, ban) {
-            console.log(`setBan(${matchId}, ${playerIndex}, ${ban})`)
-            const response = await axios.post(
-                `${apiUrl}/tournament_ban/${matchId}/${playerIndex}/${ban}`,
-                {},
-                {
-                    headers: {
-                        'Authorization': 'Bearer ' + this.token,
-                    }
-                },
-            ).then(this.update);
-        },
-        generateTimetable() {
-            const timeTable = {};
+                ).then(this.update);
+            },
+            async setGroupGame(groupIndex, gameIndex) {
+                await axios.post(
+                    `${apiUrl}/change_group_game/${groupIndex}/${gameIndex}`,
+                    {},
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + this.token,
+                        }
+                    },
+                ).then(this.update);
+            },
+            async sendGroupResults(groupIndex, gameIndex, result) {
+                await axios.post(
+                    `${apiUrl}/poules/${groupIndex}/${gameIndex}`,
+                    {
+                        result
+                    },
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + this.token,
+                        }
+                    },
+                ).then(this.update);
+            },
+            async sendGroupBonus(groupIndex, result) {
+                await axios.post(
+                    `${apiUrl}/poules_bonus/${groupIndex}`,
+                    {
+                        result
+                    },
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + this.token,
+                        }
+                    },
+                ).then(this.update);
+            },
+            async setTournamentScore(matchId, playerIndex, score) {
+                await axios.post(
+                    `${apiUrl}/tournament/${matchId}/${playerIndex}/${score}`,
+                    {},
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + this.token,
+                        }
+                    },
+                ).then(this.update);
+            },
+            async setBan(matchId, playerIndex, ban) {
+                await axios.post(
+                    `${apiUrl}/tournament_ban/${matchId}/${playerIndex}/${ban}`,
+                    {},
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + this.token,
+                        }
+                    },
+                ).then(this.update);
+            },
+            generateTimetable() {
+                const timeTable = {};
 
-            for (let match of this.match_list) {
-                if (timeTable[match.date] === undefined)
-                    timeTable[match.date] = [];
-                timeTable[match.date].push(match);
+                for (let match of this.tournament_match.match_list) {
+                    if (timeTable[match.date] === undefined)
+                        timeTable[match.date] = [];
+                    timeTable[match.date].push(match);
+                }
+
+                return timeTable;
+            },
+            async resetCup() {
+                await axios.post(
+                    `${apiUrl}/reset`,
+                    {},
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + this.token,
+                        }
+                    },
+                );
+                await this.update();
             }
-
-            console.log(timeTable);
-
-            return timeTable;
-        }
-    },
-});
+        },
+    })
+;
 
 const defaultGroupStage = {
     group: [
